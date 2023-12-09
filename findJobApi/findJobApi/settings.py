@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+# 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
 
 # Application definition
 
