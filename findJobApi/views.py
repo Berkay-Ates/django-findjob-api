@@ -514,15 +514,17 @@ def create_user_post(request):
 @api_view(["POST"])
 def create_user(request):
     mail = request.data.get("mail")
-    raw_query = 'select * from "findJobApi_user" where mail= %s '
+    password = request.data.get("user_password")
+    raw_query = 'select * from "findJobApi_user" where mail= %s and user_password = %s'
 
     user = User()
 
     if mail is not None:
-        result = User.objects.raw(raw_query=raw_query, params=[mail])
+        result = User.objects.raw(raw_query=raw_query, params=[mail, password])
 
         for p in result:
             user.name = p.name
+            user.user_password = p.user_password
             user.surname = p.surname
             user.is_active = p.is_active
             user.mail = p.mail
@@ -532,7 +534,7 @@ def create_user(request):
 
         if len(result) == 0:
             print("verilen mail addresinde kullanici mevcut degil")
-            raw_insert_query = 'INSERT INTO "findJobApi_user" (name, surname, mail, "person_id",created_date, is_active,gender) VALUES (%s, %s, %s, %s, %s, %s,%s)'
+            raw_insert_query = 'INSERT INTO "findJobApi_user" (name, surname, mail, "person_id",created_date, is_active,gender,user_password) VALUES (%s, %s, %s, %s, %s, %s,%s,%s)'
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -545,6 +547,7 @@ def create_user(request):
                         f"'{current_time}'",
                         "False",  # assuming is_active is a boolean field
                         request.data.get("gender"),
+                        request.data.get("user_password"),
                     ],
                 )
 
@@ -599,6 +602,7 @@ def login_user(request):
 
         for p in result:
             user.name = p.name
+            user.user_password = p.user_password
             user.surname = p.surname
             user.is_active = p.is_active
             user.mail = p.mail
