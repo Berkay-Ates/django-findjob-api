@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 
 subject = "İş Bul İş Sistemi Mail Doğrulama"
-message = "http://127.0.0.1:8000/activateUserAccount/"
+message = "https://findjopapi.onrender.com/"
 from_email = "ates80408@gmail.com"
 
 
