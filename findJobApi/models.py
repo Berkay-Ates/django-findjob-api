@@ -30,6 +30,7 @@ class User(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
     is_active = models.BooleanField(default=False)
     gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
+    user_password = models.CharField(max_length=255)
 
 
 class Company(models.Model):

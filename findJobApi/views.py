@@ -589,12 +589,13 @@ def create_user(request):
 @api_view(["POST"])
 def login_user(request):
     mail = request.data.get("mail")
-    raw_query = 'select * from "findJobApi_user" where mail= %s'
+    user_password = request.data.get("user_password")
+    raw_query = 'select * from "findJobApi_user" where mail= %s and user_password = %s'
 
     user = User()
 
     if mail is not None:
-        result = User.objects.raw(raw_query=raw_query, params=[mail])
+        result = User.objects.raw(raw_query=raw_query, params=[mail, user_password])
 
         for p in result:
             user.name = p.name
@@ -607,7 +608,9 @@ def login_user(request):
         if len(result) == 0:
             ## boyle bir kullanici yokmus dolayisiyla hata atalim
             return JsonResponse(
-                {"result": "Mail adresi veri tabanina kayitli degil"},
+                {
+                    "result": "Mail adresi veri tabanina kayitli degil veya Yanlis Sifre girdiniz."
+                },
                 safe=False,
                 status=status.HTTP_404_NOT_FOUND,
             )

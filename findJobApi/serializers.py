@@ -13,6 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
             "created_date",
             "gender",
             "is_active",
+            "user_password",
         ]
 
 
