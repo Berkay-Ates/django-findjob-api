@@ -521,7 +521,7 @@ def create_user(request):
 
     if mail is not None and password is not None:
         result = User.objects.raw(raw_query=raw_query, params=[mail, password])
-        user_id = (uuid.uuid4(),)
+        user_id = str(uuid.uuid4())
         for p in result:
             user.name = p.name
             user.user_password = p.user_password
