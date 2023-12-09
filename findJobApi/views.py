@@ -519,9 +519,9 @@ def create_user(request):
 
     user = User()
 
-    if mail is not None:
+    if mail is not None and password is not None:
         result = User.objects.raw(raw_query=raw_query, params=[mail, password])
-
+        user_id = (uuid.uuid4(),)
         for p in result:
             user.name = p.name
             user.user_password = p.user_password
@@ -543,7 +543,7 @@ def create_user(request):
                         request.data.get("name"),
                         request.data.get("surname"),
                         request.data.get("mail"),
-                        uuid.uuid4(),
+                        user_id,
                         f"'{current_time}'",
                         "False",  # assuming is_active is a boolean field
                         request.data.get("gender"),
@@ -555,8 +555,20 @@ def create_user(request):
             transaction.commit()
             sendMail([request.data["mail"]])
             ## kullanici yeni kaydoluyor suanda kendisini kaydedip aktivasyon maili yollamamiz gerekli
+            result = User.objects.raw(raw_query=raw_query, params=[mail, password])
+            user_id = (uuid.uuid4(),)
+            for p in result:
+                user.name = p.name
+                user.user_password = p.user_password
+                user.surname = p.surname
+                user.is_active = p.is_active
+                user.mail = p.mail
+                user.gender = p.gender
+                user.person_id = p.person_id
+                user.created_date = p.created_date
+
             return JsonResponse(
-                {"result": request.data},
+                {"result": UserSerializer(user).data},
                 safe=False,
                 status=status.HTTP_201_CREATED,
             )
@@ -577,7 +589,7 @@ def create_user(request):
             )
             ## var ve aktif olan bir kullanici icin kayit olunmaya calisildi hata mesaji vererek islemi sonlandiralim
             return JsonResponse(
-                {"result": "Bu kullanici zaten mevcut"}, status=status.HTTP_409_CONFLICT
+                {"result": UserSerializer(user).data}, status=status.HTTP_409_CONFLICT
             )
 
     else:
