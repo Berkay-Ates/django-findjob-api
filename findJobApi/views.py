@@ -329,6 +329,37 @@ def create_company_post(request):
 
 
 @api_view(["GET"])
+def get_one_user_information(request, mail):
+    raw_get_query = 'SELECT * FROM "findJobApi_user" where mail=%s'
+
+    count = 0
+    user = []
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(raw_get_query, params=[mail])
+            result = cursor.fetchall()
+
+    except Exception as e:
+        return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    for p in result:
+        company_post = {
+            "name": p[0],
+            "surname": p[1],
+            "mail": p[2],
+            "person_id": p[3],
+            "created_date": p[4],
+            "is_active": p[5],
+            "gender": p[6],
+        }
+        user.append(company_post)
+        count += 1
+
+    return JsonResponse({"result": user, "count": count}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
 def get_all_users(request):
     raw_get_query = 'SELECT * FROM "findJobApi_user"'
 

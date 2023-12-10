@@ -31,6 +31,7 @@ class User(models.Model):
     is_active = models.BooleanField(default=False)
     gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
     user_password = models.CharField(max_length=255)
+    profile_img_url = models.CharField(max_length=255)
 
 
 class Company(models.Model):
