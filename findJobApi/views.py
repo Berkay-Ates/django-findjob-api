@@ -562,10 +562,11 @@ def create_user(request):
             user.gender = p.gender
             user.person_id = p.person_id
             user.created_date = p.created_date
+            user.profile_img_url = p.profile_img_url
 
         if len(result) == 0:
             print("verilen mail addresinde kullanici mevcut degil")
-            raw_insert_query = 'INSERT INTO "findJobApi_user" (name, surname, mail, "person_id",created_date, is_active,gender,user_password) VALUES (%s, %s, %s, %s, %s, %s,%s,%s)'
+            raw_insert_query = 'INSERT INTO "findJobApi_user" (name, surname, mail, "person_id",created_date, is_active,gender,user_password,profile_img_url) VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s)'
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
             with connection.cursor() as cursor:
                 cursor.execute(
@@ -579,6 +580,7 @@ def create_user(request):
                         "False",  # assuming is_active is a boolean field
                         request.data.get("gender"),
                         request.data.get("user_password"),
+                        request.data.get("profile_img_url"),
                     ],
                 )
 
@@ -597,6 +599,7 @@ def create_user(request):
                 user.gender = p.gender
                 user.person_id = p.person_id
                 user.created_date = p.created_date
+                user.profile_img_url = p.profile_img_url
 
             return JsonResponse(
                 {"result": UserSerializer(user).data},
@@ -651,6 +654,8 @@ def login_user(request):
             user.mail = p.mail
             user.gender = p.gender
             user.person_id = p.person_id
+            user.created_date = p.created_date
+            user.profile_img_url = p.profile_img_url
 
         if len(result) == 0:
             ## boyle bir kullanici yokmus dolayisiyla hata atalim

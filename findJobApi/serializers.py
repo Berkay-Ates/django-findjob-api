@@ -14,6 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
             "gender",
             "is_active",
             "user_password",
+            "profile_img_url",
         ]
 
 

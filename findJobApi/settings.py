@@ -81,9 +81,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "railway",
         "USER": "postgres",
-        "PASSWORD": "FG-B*-6E3feCGG63ABacB4cfeBG5g*GB",
-        "HOST": "viaduct.proxy.rlwy.net",
-        "PORT": "53369",
+        "PASSWORD": "6BccC-eBE*F6-6fc13EdAeD-Ce5*6FbE",
+        "HOST": "monorail.proxy.rlwy.net",
+        "PORT": "55830",
     }
 }
 
@@ -129,7 +129,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = "smtp.gmail.com"
@@ -138,6 +137,6 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = "ates80408@gmail.com"
 
-EMAIL_HOST_PASSWORD = "ywbwvudclfclyebd"
+EMAIL_HOST_PASSWORD = "qntzgadlzkfrnsqf"
 
 EMAIL_USE_TLS = True
