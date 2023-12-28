@@ -7,7 +7,7 @@ from .models import User, UserPost
 from .serializers import UserSerializer
 from django.db import connection
 from rest_framework import status
-from .utils import sendMail
+from .utils import getCompanyThroughName, sendMail
 from django.db import connection, transaction
 
 
@@ -205,6 +205,14 @@ def get_all_jobs(request):
 
 @api_view(["POST"])
 def create_job(request):
+    company = getCompanyThroughName(request.data.get("company_name"))
+
+    if company is None:
+        return JsonResponse(
+            {"result": "Verilen isimde bir sirket bulunmuyor"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
     raw_insert_query = 'insert into "findJobApi_job" (title,description,application_count,salary,created_date,job_id,company_id) values (%s,%s,%s,%s,%s,%s,%s)'
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
     try:
@@ -218,7 +226,7 @@ def create_job(request):
                     request.data.get("salary"),
                     f"{current_time}",
                     str(uuid.uuid4()),
-                    request.data.get("company_id"),
+                    company.company_id,
                 ],
             )
 
