@@ -344,7 +344,7 @@ def get_one_user_information(request, mail):
         return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     for p in result:
-        company_post = {
+        user_info = {
             "name": p[0],
             "surname": p[1],
             "mail": p[2],
@@ -352,8 +352,10 @@ def get_one_user_information(request, mail):
             "created_date": p[4],
             "is_active": p[5],
             "gender": p[6],
+            "user_password": p[7],
+            "profile_img_url": p[8],
         }
-        user.append(company_post)
+        user.append(user_info)
         count += 1
 
     return JsonResponse({"result": user, "count": count}, status=status.HTTP_200_OK)
@@ -364,7 +366,7 @@ def get_all_users(request):
     raw_get_query = 'SELECT * FROM "findJobApi_user"'
 
     count = 0
-    companies = []
+    users = []
 
     try:
         with connection.cursor() as cursor:
@@ -375,7 +377,7 @@ def get_all_users(request):
         return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     for p in result:
-        company_post = {
+        user_info = {
             "name": p[0],
             "surname": p[1],
             "mail": p[2],
@@ -383,13 +385,13 @@ def get_all_users(request):
             "created_date": p[4],
             "is_active": p[5],
             "gender": p[6],
+            "user_password": p[7],
+            "profile_img_url": p[8],
         }
-        companies.append(company_post)
+        users.append(user_info)
         count += 1
 
-    return JsonResponse(
-        {"result": companies, "count": count}, status=status.HTTP_200_OK
-    )
+    return JsonResponse({"result": users, "count": count}, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
