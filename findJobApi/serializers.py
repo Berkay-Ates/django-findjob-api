@@ -25,6 +25,8 @@ class CompanySerializers(serializers.ModelSerializer):
             "name",
             "company_id",
             "created_date",
+            "field",
+            "company_img_url",
         ]
 
 

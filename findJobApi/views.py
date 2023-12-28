@@ -157,7 +157,7 @@ def get_company_jobs(request, companyId):
         return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     for p in result:
-        company_post = {
+        job = {
             "title": p[0],
             "description": p[1],
             "application_count": p[2],
@@ -166,7 +166,7 @@ def get_company_jobs(request, companyId):
             "job_id": p[5],
             "company_id": p[6],
         }
-        jobs.append(company_post)
+        jobs.append(job)
         count += 1
 
     return JsonResponse({"result": jobs, "count": count}, status=status.HTTP_200_OK)
@@ -188,7 +188,7 @@ def get_all_jobs(request):
         return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     for p in result:
-        company_post = {
+        job = {
             "title": p[0],
             "description": p[1],
             "application_count": p[2],
@@ -197,7 +197,7 @@ def get_all_jobs(request):
             "job_id": p[5],
             "company_id": p[6],
         }
-        jobs.append(company_post)
+        jobs.append(job)
         count += 1
 
     return JsonResponse({"result": jobs, "count": count}, status=status.HTTP_200_OK)
@@ -414,6 +414,8 @@ def get_all_companies(request):
             "name": p[0],
             "company_id": p[1],
             "created_date": p[2],
+            "field": p[3],
+            "company_img_url": p[4],
         }
         companies.append(company_post)
         count += 1
@@ -425,16 +427,19 @@ def get_all_companies(request):
 
 @api_view(["POST"])
 def create_company(request):
-    raw_insert_query = 'insert into "findJobApi_company" (name,company_id,created_date) values (%s,%s,%s)'
+    raw_insert_query = 'insert into "findJobApi_company" (name,company_id,created_date,field,company_img_url) values (%s,%s,%s,%s,%s)'
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
+    company_id = str(uuid.uuid4())
     try:
         with connection.cursor() as cursor:
             cursor.execute(
                 raw_insert_query,
                 params=[
                     request.data.get("name"),
-                    str(uuid.uuid4()),
+                    company_id,
                     f"{current_time}",
+                    request.data.get("field"),
+                    request.data.get("company_img_url"),
                 ],
             )
 
@@ -443,8 +448,16 @@ def create_company(request):
             {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
+    response_data = {
+        "name": request.data.get("name"),
+        "company_id": company_id,
+        "created_date": current_time,
+        "field": request.data.get("field"),
+        "company_img_url": request.data.get("company_img_url"),
+    }
+
     return JsonResponse(
-        {"result": request.data}, safe=False, status=status.HTTP_201_CREATED
+        {"result": response_data}, safe=False, status=status.HTTP_201_CREATED
     )
 
 

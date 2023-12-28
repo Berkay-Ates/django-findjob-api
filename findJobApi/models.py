@@ -40,6 +40,8 @@ class Company(models.Model):
         primary_key=True, default=uuid4, editable=False, unique=True, db_index=True
     )
     created_date = models.DateTimeField(auto_now_add=True, blank=True)
+    field = models.CharField(max_length=255)
+    company_img_url = models.CharField(max_length=255)
 
 
 class Job(models.Model):
