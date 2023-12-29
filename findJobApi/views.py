@@ -481,11 +481,10 @@ def get_all_companies(request):
     for p in result:
         company_post = {
             "name": p[0],
-            "company_id": p[1],
-            "created_date": p[2],
-            "field": p[3],
-            "company_img_url": p[4],
-            "company_order": p[5],
+            "created_date": p[1],
+            "field": p[2],
+            "company_img_url": p[3],
+            "company_id": p[4],
         }
         companies.append(company_post)
         count += 1
