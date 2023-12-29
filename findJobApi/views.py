@@ -108,7 +108,7 @@ def get_all_job_applications(request):
 def create_job_application(request):
     raw_insert_query = 'insert into "findJobApi_jobapplication" (job_application_id,application_date,company_id,job_id,user_id) values (%s,%s,%s,%s,%s)'
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-    uniqueID = (str(uuid.uuid4()),)
+    uniqueID = str(uuid.uuid4())
     try:
         with connection.cursor() as cursor:
             cursor.execute(
