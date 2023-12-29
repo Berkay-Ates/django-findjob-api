@@ -27,7 +27,6 @@ class CompanySerializers(serializers.ModelSerializer):
             "created_date",
             "field",
             "company_img_url",
-            "company_order",
         ]
 
 

@@ -285,7 +285,7 @@ def create_job(request):
                     request.data.get("salary"),
                     f"{current_time}",
                     str(uuid.uuid4()),
-                    company.company_order,
+                    company.company_id,
                 ],
             )
 
