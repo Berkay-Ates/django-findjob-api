@@ -3,7 +3,7 @@ from datetime import *
 import uuid
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from .models import User, UserPost
+from .models import User, UserPost, Job
 from .serializers import UserSerializer
 from django.db import connection
 from rest_framework import status
@@ -107,6 +107,7 @@ def get_all_job_applications(request):
 @api_view(["POST"])
 def create_job_application(request):
     raw_insert_query = 'insert into "findJobApi_jobapplication" (job_application_id,application_date,company_id,job_id,user_id) values (%s,%s,%s,%s,%s)'
+    raw_job_update_query = 'update "findJobApi_job" set application_count = application_count+1 where job_id = %s '
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
     uniqueID = str(uuid.uuid4())
     try:
@@ -121,6 +122,12 @@ def create_job_application(request):
                     request.data.get("user_id"),
                 ],
             )
+            cursor.close()
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    raw_job_update_query, params=[request.data.get("job_id")]
+                )
 
             cursor.close()
 
