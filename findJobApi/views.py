@@ -497,16 +497,14 @@ def get_all_companies(request):
 
 @api_view(["POST"])
 def create_company(request):
-    raw_insert_query = 'insert into "findJobApi_company" (name,company_id,created_date,field,company_img_url) values (%s,%s,%s,%s,%s)'
+    raw_insert_query = 'insert into "findJobApi_company" (name,created_date,field,company_img_url) values (%s,%s,%s,%s)'
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
-    company_id = str(uuid.uuid4())
     try:
         with connection.cursor() as cursor:
             cursor.execute(
                 raw_insert_query,
                 params=[
                     request.data.get("name"),
-                    company_id,
                     f"{current_time}",
                     request.data.get("field"),
                     request.data.get("company_img_url"),
@@ -520,7 +518,6 @@ def create_company(request):
 
     response_data = {
         "name": request.data.get("name"),
-        "company_id": company_id,
         "created_date": current_time,
         "field": request.data.get("field"),
         "company_img_url": request.data.get("company_img_url"),
