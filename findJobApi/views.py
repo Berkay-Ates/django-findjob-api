@@ -202,7 +202,7 @@ def create_job_application(request):
 
 @api_view(["GET"])
 def get_company_jobs(request, companyId):
-    raw_get_query = 'SELECT * FROM "findJobApi_job" where company_id = %s '
+    raw_get_query = 'SELECT * FROM "findJobApi_job" where company_id=%s '
 
     count = 0
     jobs = []
@@ -474,7 +474,9 @@ def get_all_companies(request):
             result = cursor.fetchall()
 
     except Exception as e:
-        return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     for p in result:
         company_post = {
@@ -483,6 +485,7 @@ def get_all_companies(request):
             "created_date": p[2],
             "field": p[3],
             "company_img_url": p[4],
+            "company_order": p[5],
         }
         companies.append(company_post)
         count += 1
