@@ -37,6 +37,7 @@ from .views import (
     get_user_job_applications,
     get_company_job_applications,
     get_one_user_information,
+    delete_job_application,
 )
 
 urlpatterns = [
@@ -61,4 +62,5 @@ urlpatterns = [
     path("getUserJobApplications/<str:userId>/", get_user_job_applications),
     path("getCompanyJobApplications/<str:companyId>/", get_company_job_applications),
     path("getOneUserInformation/<str:mail>/", get_one_user_information),
+    path("deleteJobApplication/<str:applicationId>/", delete_job_application),
 ]

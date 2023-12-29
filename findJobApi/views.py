@@ -3,7 +3,7 @@ from datetime import *
 import uuid
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from .models import User, UserPost, Job
+from .models import User, JobApplication
 from .serializers import UserSerializer
 from django.db import connection
 from rest_framework import status
@@ -101,6 +101,58 @@ def get_all_job_applications(request):
 
     return JsonResponse(
         {"result": job_applications, "count": count}, status=status.HTTP_200_OK
+    )
+
+
+@api_view(["GET"])
+def delete_job_application(request, applicationId):
+    raw_select_query = (
+        'select * from "findJobApi_jobapplication" where job_application_id=%s'
+    )
+    raw_delete_query = (
+        'delete from "findJobApi_jobapplication" where job_application_id=%s'
+    )
+    raw_update_query = 'update "findJobApi_job" set application_count = application_count-1 where job_id = %s '
+
+    job: any = None  ## silinecek olan job application
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(raw_select_query, params=[applicationId])
+            result = cursor.fetchall()
+
+    except Exception as e:
+        return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    for p in result:
+        job = {
+            "job_application_id": p[0],
+            "application_date": p[1],
+            "company": p[2],
+            "job": p[3],
+            "user": p[4],
+        }
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                raw_delete_query,
+                params=[job["job_application_id"]],
+            )
+            cursor.close()
+
+        with connection.cursor() as cursor:
+            cursor.execute(raw_update_query, params=[job["job"]])
+
+            cursor.close()
+
+    except Exception as e:
+        return JsonResponse(
+            {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    return JsonResponse(
+        {"result": "Silme islemi basarili"}, status=status.HTTP_204_NO_CONTENT
     )
 
 
