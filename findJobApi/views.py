@@ -202,7 +202,7 @@ def create_job_application(request):
 
 @api_view(["GET"])
 def get_company_jobs(request, companyId):
-    raw_get_query = 'SELECT * FROM "findJobApi_job" where company_id=%s '
+    raw_get_query = 'SELECT * FROM "findJobApi_job" where company_id=%s  '
 
     count = 0
     jobs = []
@@ -464,6 +464,7 @@ def get_all_users(request):
 @api_view(["GET"])
 def get_all_companies(request):
     raw_get_query = 'SELECT * FROM "findJobApi_company"'
+    raw_get_company_jobs = 'SELECT company_id, COUNT(*) as job_count FROM "findJobApi_job" GROUP BY company_id having company_id = %s'
 
     count = 0
     companies = []
@@ -473,13 +474,27 @@ def get_all_companies(request):
             cursor.execute(raw_get_query)
             result = cursor.fetchall()
 
+        cursor.close()
+
     except Exception as e:
-        return JsonResponse(
-            {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     for p in result:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(raw_get_company_jobs, [p[4]])
+                result2 = cursor.fetchall()
+                job_count = result2[0][1] if result2 else 0
+            cursor.close()
+
+        except Exception as e:
+            print(str(e))
+            return JsonResponse(
+                {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
         company_post = {
+            "job_count": job_count,
             "name": p[0],
             "created_date": p[1],
             "field": p[2],
