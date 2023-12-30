@@ -1,3 +1,4 @@
+import json
 from django.utils import timezone
 from datetime import *
 import uuid
@@ -232,6 +233,59 @@ def get_company_jobs(request, companyId):
 
 
 @api_view(["GET"])
+def get_all_jobs_ordering(request, jobOrder):
+    ##* viewdan sorgu cekme kisiti
+    raw_get_high_salary_job_query = "SELECT * from high_paid_jobs()"
+    raw_get_newest_job_query = "SELECT * from high_paid_jobs()"
+    raw_get_most_applied_job_query = "SELECT * from most_applied_jobs()"
+
+    raw_get_query = ""
+
+    if jobOrder == "mostAppliedJobs":
+        raw_get_query = raw_get_most_applied_job_query
+    elif jobOrder == "higestSalaryJobs":
+        raw_get_query = raw_get_high_salary_job_query
+    elif jobOrder == "newestJobs":
+        raw_get_query = raw_get_newest_job_query
+
+    count = 0
+    jobs = []
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(raw_get_query)
+            result = cursor.fetchall()
+
+    except Exception as e:
+        return JsonResponse({"result": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    str_result = result[0][0]
+    str_result = str_result.strip("{}")
+    print(str_result)
+
+    for donut in str_result.split("("):
+        # Her bir objeyi bir sözlüğe dönüştürün
+        donut = donut.strip('"()"')
+        print
+        donut = donut.split(",")
+        print(donut)
+        if len(donut) >= 6:
+            job = {
+                "title": donut[0],
+                "description": donut[1],
+                "application_count": int(donut[2]),
+                "salary": int(donut[3]),
+                "created_date": donut[4],
+                "job_id": donut[5],
+                "company_id": int(donut[6].split(")")[0]),
+            }
+            jobs.append(job)
+            count += 1
+
+    return JsonResponse({"result": jobs, "count": count}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
 def get_all_jobs(request):
     raw_get_query = 'SELECT * FROM "findJobApi_job"'
 
@@ -252,7 +306,7 @@ def get_all_jobs(request):
             "description": p[1],
             "application_count": p[2],
             "salary": p[3],
-            "created_data": p[4],
+            "created_date": p[4],
             "job_id": p[5],
             "company_id": p[6],
         }

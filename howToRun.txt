@@ -1,0 +1,24 @@
+python -m venv .venv
+pip install django 
+pip install restframework
+
+django-admin startproject findWorkApi 
+
+python manage.py runserver 
+
+python manage.py createsuperuser => email,pass,name => admin
+
+
+python manage.py makemigrations drinks 
+python manage.py migrate 
+
+
+
+
+
+
+
+
+
+
+
