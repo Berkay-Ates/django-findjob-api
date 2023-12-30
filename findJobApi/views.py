@@ -236,7 +236,7 @@ def get_company_jobs(request, companyId):
 def get_all_jobs_ordering(request, jobOrder):
     ##* viewdan sorgu cekme kisiti
     raw_get_high_salary_job_query = "SELECT * from high_paid_jobs()"
-    raw_get_newest_job_query = "SELECT * from high_paid_jobs()"
+    raw_get_newest_job_query = "SELECT * from newest_jobs()"
     raw_get_most_applied_job_query = "SELECT * from most_applied_jobs()"
 
     raw_get_query = ""
