@@ -696,8 +696,12 @@ def create_user_post(request):
 def create_user(request):
     mail = request.data.get("mail")
     password = request.data.get("user_password")
-    raw_query = 'select * from "findJobApi_user" where mail= %s and user_password = %s'
-
+    #raw_query = 'select * from "findJobApi_user" where mail= %s and user_password = %s'
+    raw_query='''
+    SELECT * FROM "findJobApi_user" WHERE mail = %s
+    INTERSECT
+    SELECT * FROM "findJobApi_user" WHERE user_password = %s;
+    '''
     user = User()
 
     if mail is not None and password is not None:
