@@ -344,9 +344,7 @@ def create_job(request):
             )
 
     except Exception as e:
-        return JsonResponse(
-            {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return JsonResponse({"result": str(e)}, status=status.HTTP_502_BAD_GATEWAY)
 
     return JsonResponse(
         {"result": request.data}, safe=False, status=status.HTTP_201_CREATED
@@ -747,7 +745,7 @@ def create_user(request):
                     transaction.commit()
                 except Exception as e:
                     return JsonResponse(
-                        {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                        {"result": str(e)}, status=status.HTTP_502_BAD_GATEWAY
                     )
 
             sendMail([request.data["mail"]])
