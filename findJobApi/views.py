@@ -473,8 +473,8 @@ def get_one_user_information(request, mail):
             "gender": p[6],
             "user_password": p[7],
             "profile_img_url": p[8],
-            "experience": p[9],
-            "school": p[10],
+            "school": p[9],
+            "experience": p[10],
         }
         user.append(user_info)
         count += 1
