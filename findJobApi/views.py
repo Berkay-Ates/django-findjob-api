@@ -721,6 +721,8 @@ def create_user(request):
             user.person_id = p.person_id
             user.created_date = p.created_date
             user.profile_img_url = p.profile_img_url
+            user.school = p.school
+            user.experience = p.experience
 
         if len(result) == 0:
             print("verilen mail addresinde kullanici mevcut degil")
