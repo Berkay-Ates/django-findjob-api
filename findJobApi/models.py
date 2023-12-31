@@ -32,6 +32,9 @@ class User(models.Model):
     gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
     user_password = models.CharField(max_length=255)
     profile_img_url = models.CharField(max_length=255)
+    experience = models.IntegerField(default=0)
+    school = models.CharField(max_length=255,default='NO_SCHOOL')
+
 
 
 class Company(models.Model):

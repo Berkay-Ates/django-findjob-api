@@ -475,6 +475,8 @@ def get_one_user_information(request, mail):
             "gender": p[6],
             "user_password": p[7],
             "profile_img_url": p[8],
+            "experience": p[9],
+            "school": p[10],
         }
         user.append(user_info)
         count += 1
@@ -508,6 +510,8 @@ def get_all_users(request):
             "gender": p[6],
             "user_password": p[7],
             "profile_img_url": p[8],
+            "school": p[9],
+            "experience": p[10],
         }
         users.append(user_info)
         count += 1
@@ -696,12 +700,12 @@ def create_user_post(request):
 def create_user(request):
     mail = request.data.get("mail")
     password = request.data.get("user_password")
-    #raw_query = 'select * from "findJobApi_user" where mail= %s and user_password = %s'
-    raw_query='''
+    # raw_query = 'select * from "findJobApi_user" where mail= %s and user_password = %s'
+    raw_query = """
     SELECT * FROM "findJobApi_user" WHERE mail = %s
     INTERSECT
     SELECT * FROM "findJobApi_user" WHERE user_password = %s;
-    '''
+    """
     user = User()
 
     if mail is not None and password is not None:
@@ -754,6 +758,8 @@ def create_user(request):
                 user.person_id = p.person_id
                 user.created_date = p.created_date
                 user.profile_img_url = p.profile_img_url
+                user.school = p.school
+                user.experience = p.experience
 
             return JsonResponse(
                 {"result": UserSerializer(user).data},
@@ -810,6 +816,8 @@ def login_user(request):
             user.person_id = p.person_id
             user.created_date = p.created_date
             user.profile_img_url = p.profile_img_url
+            user.school = p.school
+            user.experience = p.experience
 
         if len(result) == 0:
             ## boyle bir kullanici yokmus dolayisiyla hata atalim

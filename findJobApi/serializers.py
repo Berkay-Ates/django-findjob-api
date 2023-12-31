@@ -15,6 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "user_password",
             "profile_img_url",
+            "experience",
+            "school",
         ]
 
 
