@@ -729,23 +729,27 @@ def create_user(request):
             raw_insert_query = 'INSERT INTO "findJobApi_user" (name, surname, mail, "person_id",created_date, is_active,gender,user_password,profile_img_url) VALUES (%s,%s, %s, %s, %s, %s, %s,%s,%s)'
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
             with connection.cursor() as cursor:
-                cursor.execute(
-                    raw_insert_query,
-                    params=[
-                        request.data.get("name"),
-                        request.data.get("surname"),
-                        request.data.get("mail"),
-                        user_id,
-                        f"'{current_time}'",
-                        "False",  # assuming is_active is a boolean field
-                        request.data.get("gender"),
-                        request.data.get("user_password"),
-                        request.data.get("profile_img_url"),
-                    ],
-                )
+                try:
+                    cursor.execute(
+                        raw_insert_query,
+                        params=[
+                            request.data.get("name"),
+                            request.data.get("surname"),
+                            request.data.get("mail"),
+                            user_id,
+                            f"'{current_time}'",
+                            "False",  # assuming is_active is a boolean field
+                            request.data.get("gender"),
+                            request.data.get("user_password"),
+                            request.data.get("profile_img_url"),
+                        ],
+                    )
+                    transaction.commit()
+                except Exception as e:
+                    return JsonResponse(
+                        {"result": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
 
-            # Commit the changes to the database
-            transaction.commit()
             sendMail([request.data["mail"]])
             ## kullanici yeni kaydoluyor suanda kendisini kaydedip aktivasyon maili yollamamiz gerekli
             result = User.objects.raw(raw_query=raw_query, params=[mail, password])
