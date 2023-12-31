@@ -880,3 +880,35 @@ def activate_user_account(request, mail):
         {"BAD_REQUEST": "given mail does not exist in database"},
         status=status.HTTP_404_NOT_FOUND,
     )
+
+
+@api_view(["POST"])
+def update_account_info(request, mail):
+    raw_query = 'select * from "findJobApi_user" where mail= %s'
+
+    if mail is not None:
+        result = User.objects.raw(raw_query=raw_query, params=[mail])
+
+        if len(result) == 0:
+            return JsonResponse(
+                {"response": "Account not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                'update "findJobApi_user" set experience = %s, school = %s where mail = %s',
+                params=[
+                    request.data.get("experience"),
+                    request.data.get("school"),
+                    mail,
+                ],
+            )
+
+        return JsonResponse(
+            {"response": "Account verified"}, status=status.HTTP_201_CREATED
+        )
+
+    return JsonResponse(
+        {"BAD_REQUEST": "given mail does not exist in database"},
+        status=status.HTTP_404_NOT_FOUND,
+    )
